@@ -1,0 +1,150 @@
+A) Title and name
+    
+    Project Gerp 
+    Ariella Mann {amann04} and Ben Rowland {browla01}
+
+B) Purpose of the program
+
+    The purpose of this program is to search through a given 
+    directory for specific words and print out the places where
+    that word was found to a given output file. 
+
+C) Acknowledgements 
+
+    Cppreference.com on hashes
+    Cplusplus.com on hashes
+    Cppreference.com on size_t s
+    Jeff the TA !!
+
+D) Files provided and descriptions 
+
+    Phase one –
+    - FSTreeTraversal.cpp: tree traversal that prints the paths to 
+                           a given directory 
+    - stringProcessing.cpp: implementation of string stripper function
+    - stringProcessing.h: decleration of the function that strips a
+                          string of trailing non alphanumeric chars
+
+    Phase two –
+    - TheHash.cpp: TheHash class implementation 
+    - TheHash.h: TheHash class declaration. Holds the hash table and 
+                 has functions that store and retrieve information 
+                 from hash
+    - Gerp.cpp: Implementation of the Gerp class
+    - Gerp.h: Declaration of the Gerp class
+    - Main.cpp: Driver function for the gerp program
+    - Makefile: Makes all of the relevant .o files for the gerp program
+                and allows the program to be compiled by writing "make"
+    - test_input.txt: one example test you 
+    - README: Explanation of provided files and the program's purpose and use
+
+
+E) How to compile and run
+
+    To compile our program simply type “make” or “make gerp” into 
+    the command line. 
+    To run our program, call the executable “./gerp”, provide it with a 
+    directory, and an outfile where the information will be stored. 
+    It should be formatted like this: ./gerp Directory OutputFile
+
+F) Architectural overview. Description of how various modules related 
+to each other
+
+    Our project comes in five modules, main, DirNode, FSTree, TheHash, and
+    Gerp. DirNode and FSTree are provided to us and work to make all of the
+    directories and files provided into a tree. TheHash is then used to 
+    store all of that data. TheHash includes a hash table and two vectors 
+    that store all of the necessary data for this program. One vector contains
+    the paths for each file and the other contains each line read in. The
+    hash table contains linked lists of structs that each contain two ints,
+    a string, and a pointer to the next struct in the list. The two ints
+    each represent an index, one for the line and the other for the path
+    of the word stored in the string. TheHash allows users to input words,
+    lines, and paths into their respective data structures and allows for
+    the user to get this information back in the form of a nicely
+    formatted string when given a word. Gerp includes functions that use
+    FSTree and DirNode to create a tree with all of the files provided,
+    then sets up an instance of  TheHash and traverses the FSTree created
+    to add all of the data to TheHash. It also includes a function that
+    runs the query loop and that fetches information from TheHash using
+    given prompts. Main is a function that simply takes in the command
+    line inputs, processes them, and uses them to call the necessary
+    functions from Gerp.
+
+
+G) An outline of data structures and algorithms used 
+
+    For this program we used a few different data structures. We used
+    vectors and a hash (hash table). We used two vectors of strings to
+    store the paths and the lines. We used vectors to store this
+    information to avoid storing these long strings multiple times.
+    Instead, we used the indices to retrieve that information and
+    therefore we only have to store two integers which is much more space
+    efficient. Vectors are dynamic arrays that store one type of data, in
+    our case, strings. Using vectors was helpful because we could store
+    indices to access elements quickly. We use a hash to store every word
+    in every file in the given directory. Using a hash is very effective
+    because it allows for constant time (O(1)) when accessing information
+    from it. A hash is a key value pair and getting the value is very easy
+    when given the key. We chose to store our information like this to
+    make our user experience as quick as possible. When presented with a
+    query and given a word to search the directory for, it is constant time
+    because every single word is a key that maps to a value. Our hash table
+    is a dynamically allocated array of linked lists that can increase in
+    size depending on the size of a given data set. Each node in the linked
+    list contains a struct which holds a string (the word), two integers
+    (the indices of the vectors), and a pointer to the following node.
+
+
+H) How we tested various parts of the classes and program. 
+Reference testing files we provided 
+
+    We tested our string stripper function using a testing main. 
+    We made many different types of strings, called the function 
+    to strip all trailing alphanumeric characters, and then tested 
+    its success using assert statements. For the tree traversal 
+    function, we used cerr and cout statements to ensure that the 
+    entire tree was being traversed. To test that the lines we 
+    were printing out to the output files were accurate, in functions
+    printSensitve and printInsensitive, we used cerr and cout statements
+    to view output. We also used assert statements to compare to the
+    reference implementation’s output. All of those lines of code have
+    since been deleted. For testing the entire program, we used diff
+    tests. We created input files with queries (test_input.txt,
+    test_input2.txt., test_input3.txt) and directed the input into our
+    program and the reference program. We then used the ‘sort’ feature to
+    sort both our output file and the reference output file. Then we diff
+    tested them. We also redirected cout output and diff tested those as
+    well. Originally, we had a lot of output because we had trailing
+    whitespace, but we were able to fix that quickly.
+    We used a testing to test parts of our TheHash class. We simply
+    called the functions and used assert statements to check specific
+    functions. The rest of the functions were tested through the diff 
+    process through the use of debugging and cerr statements to identify 
+    specifc lines in our code that were causing issues. For us, this was 
+    the main way that we were successful in identyfing problems. 
+    The main problem we encountered throughout the coding process was that,
+    originally, it was taking our program well over 10 minutes to
+    run through even smallGutenberg. At first, we tried making our
+    parameters into references,  but it made little to no difference. We
+    eventually were able to figure out that we were iterating over the
+    entire linked list in our hash everytime we were storing a word which
+    made our program extremely time inefficient. This stemmed from the
+    issue that we were not dealing with duplicates. When we fixed this
+    issue we were able to run our program in only a few seconds.
+    Another large issue we faced was losing memory. Even after meeting
+    with three TAs, no one was able to identify why we were losing memory
+    (about 100,000 out of 2,000,000 bits). One thing we tried, by
+    recommendation of a TA, was rewriting the resize function using
+    addWord to individually move over every node of data. At first, this 
+    increased memory loss by quite a lot. Eventually, we were able to delete
+    all of our memory by implementing that idea better. Running out program
+    on largeGutenberg uses 4.1 RAM, so running valgrin on it does not work,
+    because it crashes at 4. We believe that this would also happen on the
+    reference because the reference uses over 4RAM as well. 
+
+
+I) How many hours we spent working 
+
+    ~25
+
